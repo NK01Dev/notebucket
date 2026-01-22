@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -57,19 +59,24 @@ class _HomeViewState extends State<HomeView> {
               child: StreamBuilder(
                   stream: LocalDbServices().listenAllNotes(),
                   builder: (context, snapshot) {
-                    if(snapshot.data==null){
-                      return EmptyWidget();
+                    // 1. Handle loading state
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
                     }
-                    final notes = snapshot.data!;
 
-                    // if(isListView){
-                    //   return NotesList(notes: notes);
-                    // }
-                    // return NotesGrid(notes: notes);
+                    // 2. Safely check for data
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const EmptyWidget();
+                    }
+
+                    final notes = snapshot.data!;
+                    log('data get from db $notes');
 
                     return AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
-                      child: isListView ? NotesList(notes: notes) : NotesGrid(notes: notes),
+                      child: isListView
+                          ? NotesList(notes: notes)
+                          : NotesGrid(notes: notes),
                     );
                   }
               ),

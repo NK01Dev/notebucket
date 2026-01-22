@@ -135,7 +135,9 @@ late  bool update = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(update ? 'Update Note' : 'Create Note', style: GoogleFonts.poppins()),
       ),
       body: Padding(
